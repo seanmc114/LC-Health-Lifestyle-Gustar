@@ -199,9 +199,15 @@ const PRESENT = {
     { en: "I don’t like wasting time at night because I prefer to rest.", es: "A mí no me gusta perder el tiempo por la noche porque prefiero descansar." }
   ]
 };
-// --- make DATASETS global + ready (fixes "DATASETS is not defined") ---
+// === DATASETS bootstrap (paste directly under the PRESENT dataset) ===
 const deepCopy = obj => JSON.parse(JSON.stringify(obj));
+
+// Make a global datasets object built from PRESENT
 window.DATASETS = { Present: PRESENT, Past: deepCopy(PRESENT), Future: deepCopy(PRESENT) };
+
+// Legacy alias for code that uses bare DATASETS (not namespaced)
+// Using 'var' at top-level ensures a true global in non-module scripts
+var DATASETS = window.DATASETS;
 
   // ===================== Global cheats =====================
   const clampCheats = n => Math.max(0, Math.min(GLOBAL_CHEATS_MAX, n|0));
