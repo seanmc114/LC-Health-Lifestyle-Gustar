@@ -199,6 +199,9 @@ const PRESENT = {
     { en: "I don’t like wasting time at night because I prefer to rest.", es: "A mí no me gusta perder el tiempo por la noche porque prefiero descansar." }
   ]
 };
+// --- make DATASETS global + ready (fixes "DATASETS is not defined") ---
+const deepCopy = obj => JSON.parse(JSON.stringify(obj));
+window.DATASETS = { Present: PRESENT, Past: deepCopy(PRESENT), Future: deepCopy(PRESENT) };
 
   // ===================== Global cheats =====================
   const clampCheats = n => Math.max(0, Math.min(GLOBAL_CHEATS_MAX, n|0));
