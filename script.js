@@ -220,23 +220,34 @@ var DATASETS = window.DATASETS;
   function setGlobalCheats(n){ localStorage.setItem(GLOBAL_CHEATS_KEY, String(clampCheats(n))); }
 
  // ===================== Compare =====================
+// ===================== Compare =====================
 const norm = s => (s || "").trim();
 const endsWithQM = s => norm(s).endsWith("?");
 
-// Accents REQUIRED; ñ ≡ n; CAPITALS IGNORED; ignore leading '¿' and a final '.' or '?'
+// Accents REQUIRED; ñ ≡ n; CAPITALS IGNORED; ignore final "." or leading "¿"
 function coreKeepAccents(s) {
   let t = norm(s);
-  if (t.startsWith("¿")) t = t.slice(1);            // ignore opening ¿ if typed
-  if (t.endsWith("?") || t.endsWith(".")) t = t.slice(0, -1); // ignore trailing ? or .
-  t = t.replace(/ñ/gi, "n");                        // treat ñ as n
-  t = t.toLowerCase();                              // ignore capitals
-  return t.replace(/\s+/g, " ");                    // collapse spaces
+
+  // Remove leading inverted question mark if used
+  if (t.startsWith("¿")) t = t.slice(1);
+
+  // Remove only final punctuation ? or .
+  if (t.endsWith("?") || t.endsWith(".")) t = t.slice(0, -1);
+
+  // Treat ñ as n
+  t = t.replace(/ñ/gi, "n");
+
+  // ✅ Ignore capital letters
+  t = t.toLowerCase();
+
+  // Remove extra spaces
+  return t.replace(/\s+/g, " ");
 }
 
-// Require '?' ONLY if the EXPECTED Spanish is a question
+// Require ? only if expected answer is a question
 function cmpAnswer(user, expected) {
   const expIsQ = endsWithQM(expected);
-  if (expIsQ && !endsWithQM(user)) return false;    // enforce ? only for questions
+  if (expIsQ && !endsWithQM(user)) return false;
   return coreKeepAccents(user) === coreKeepAccents(expected);
 }
 
